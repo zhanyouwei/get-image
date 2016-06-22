@@ -26,7 +26,7 @@ function analysis(url, name, cb) {
 		}
 	});
 	var srcReg = /\bg\/-?\b.*\b-?\/s\b/gi;
-	var srcpreFix = 'http://img13.360buyimg.com/n0/';
+	var srcpreFix = 'http://img13.360buyimg.com/n1/';
 	superAgent
 		.get(url)
 		.end(function (err, res) {
