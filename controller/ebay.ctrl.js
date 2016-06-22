@@ -75,11 +75,11 @@ function analysis(url, name, cb) {
 					res.on("end", function () {
 						fs.writeFile(downloadDir + item.imgName, imgData, "binary", function (err) {
 							if (err) {
-								console.log(err);
 								console.log("down fail");
 								return;
 							}
 							console.log("down success");
+							callback();
 						});
 					});
 				});
