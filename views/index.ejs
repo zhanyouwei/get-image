@@ -1,0 +1,71 @@
+<!doctype html>
+<html class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title><%= title %></title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="renderer" content="webkit">
+  <link rel="stylesheet" href="/javascripts/mbui/css/mbui.min.css">
+</head>
+<body>
+<!--[if lte IE 9]>
+<p class="browsehappy">你正在使用<strong>过时</strong>的浏览器，Amaze UI 暂不支持。 请 <a href="http://browsehappy.com/" target="_blank">升级浏览器</a>
+  以获得更好的体验！</p>
+<![endif]-->
+
+<header class="mb-topbar mb-topbar-inverse admin-header">
+  <div class="mb-topbar-brand">
+    <strong><%= title %> for Meitun</strong>
+    <small>by 友伟</small>
+  </div>
+
+  <button class="mb-topbar-btn mb-topbar-toggle mb-btn mb-btn-sm mb-btn-success mb-show-sm-only"
+          data-mb-collapse="{target: '#topbar-collapse'}"><span class="mb-sr-only">导航切换</span> <span
+            class="mb-icon-bars"></span></button>
+
+  <div class="mb-collapse mb-topbar-collapse" id="topbar-collapse">
+  </div>
+</header>
+
+<div class="mb-g mb-margin-bottom-lg">
+  <div class="mb-u-lg-6">
+    <form class="mb-form" role="form" action="/analysis" method="post">
+      <div class="mb-form-group">
+        <select name="goodsPlatform" required>
+          <option value="<%= goodsPlatform[0] %>">请选择平台(默认为<%= goodsPlatform[0] %>)</option>
+
+          <% for(var i = 0;i < goodsPlatform.length;i++){ %>
+          <option value="<%= goodsPlatform[i] %>"><%= goodsPlatform[i] %></option>
+          <% } %>
+        </select>
+        <span class="mb-form-caret"></span>
+      </div>
+
+      <div class="mb-form-group">
+        <input name="goodsName" type="text" class="mb-form-field" placeholder="商品名称" required>
+      </div>
+
+      <div class="mb-form-group">
+        <input name="goodsUrl" type="text" class="mb-form-field" placeholder="商品地址" required>
+      </div>
+
+      <button id="analyse" type="submit" class="mb-btn mb-btn-primary">开始分析</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <hr>
+  <p class="mb-padding-left">
+    © 2016 友伟.zhanyouwei@icloud.com
+  </p>
+</footer>
+
+</body>
+<script src="/javascripts/jquery1.11.1.min.js"></script>
+<script src="/javascripts/mbui/js/mbui.min.js"></script>
+</html>
