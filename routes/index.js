@@ -31,6 +31,7 @@ router.get('/', function (req, res) {
 router.post('/analysis', function (req, res, next) {
 	var goodsPlatform = req.body.goodsPlatform;
 	var goodsUrl = req.body.goodsUrl;
+	console.log(goodsUrl);
 	var goodsName = req.body.goodsName;
 
 	if (_.indexOf(goodsPlatformList, goodsPlatform) !== -1) {

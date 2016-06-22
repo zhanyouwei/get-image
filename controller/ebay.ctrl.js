@@ -23,7 +23,7 @@ function analysis(url, name, cb) {
 			downloadDir = rootDir + "/download/images/" + name + '/';
 		}
 	});
-	var srcReg = /\bg\/-?\b.*\b-?\/s\b/gi;
+	var srcReg = /\bg\/-?~?\b.*\b-?~?\/s\b/gi;
 
 	superAgent
 		.get(url)
