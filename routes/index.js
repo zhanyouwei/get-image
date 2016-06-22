@@ -23,7 +23,7 @@ var goodsPlatformList = [
 
 router.get('/', function (req, res) {
 	res.render('index', {
-		title: '助手',
+		title: '海淘助手',
 		goodsPlatform: goodsPlatformList
 	});
 });
