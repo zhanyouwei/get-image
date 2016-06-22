@@ -36,8 +36,8 @@
     <form class="mb-form" role="form" action="/analysis" method="post">
       <div class="mb-form-group">
         <select name="goodsPlatform" required>
+          <option></option>
           <option value="<%= goodsPlatform[0] %>">请选择平台(默认为<%= goodsPlatform[0] %>)</option>
-
           <% for(var i = 0;i < goodsPlatform.length;i++){ %>
           <option value="<%= goodsPlatform[i] %>"><%= goodsPlatform[i] %></option>
           <% } %>
