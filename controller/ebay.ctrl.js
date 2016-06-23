@@ -11,6 +11,7 @@ var _ = require('lodash');
 var mkdirp = require('mkdirp');
 var async = require('async');
 
+var getHtml = require('../core/get-html').getHtml;
 
 var rootDir = path.join(__dirname, '../');
 
@@ -25,73 +26,73 @@ function analysis(url, name, cb) {
 	});
 	var srcReg = /\bg\/-?~?\b.*\b-?~?\/s\b/gi;
 
-	superAgent
-		.get(url)
-		.end(function (err, res) {
-			var $ = cheerio.load(res.text);
+	getHtml(url, function (content) {
+		console.log(content);
+		var $ = cheerio.load(content);
+		console.log($('#icImg'));
+		console.log('==========');
+		var baseSrc = $('#icImg').attr('src');
+		console.log(baseSrc);
+		var splitArr = baseSrc.split('/');
+		var imgSuffix = splitArr[splitArr.length - 1];
 
-			var baseSrc = $('#icImg').attr('src');
-			console.log(baseSrc);
-			var splitArr = baseSrc.split('/');
-			var imgSuffix = splitArr[splitArr.length - 1];
+		var srcArr = [];
+		var nameArrTemp = [];
+		if($('.tdThumb img').length>0) {
+			$('.tdThumb img').get().forEach(function (item) {
+				var itemName = item.attribs.src.match(srcReg)[0].split('/')[1] + '_' + imgSuffix;
 
-			var srcArr = [];
-			var nameArrTemp = [];
-			if($('.tdThumb img').length>0) {
-				$('.tdThumb img').get().forEach(function (item) {
-					var itemName = item.attribs.src.match(srcReg)[0].split('/')[1] + '_' + imgSuffix;
-
-					if (_.indexOf(nameArrTemp, itemName) === -1) {
-						nameArrTemp.push(itemName);
-						srcArr.push({
-							imgUrl: baseSrc.replace(srcReg,
-								item.attribs.src.match(srcReg)[0]),
-							imgName: itemName
-						});
-					}
-				});
-			}else{
-				var itemName = baseSrc.match(srcReg)[0].split('/')[1] + '_' + imgSuffix;
 				if (_.indexOf(nameArrTemp, itemName) === -1) {
 					nameArrTemp.push(itemName);
 					srcArr.push({
 						imgUrl: baseSrc.replace(srcReg,
-							baseSrc.match(srcReg)[0]),
+							item.attribs.src.match(srcReg)[0]),
 						imgName: itemName
 					});
 				}
+			});
+		}else{
+			var itemName = baseSrc.match(srcReg)[0].split('/')[1] + '_' + imgSuffix;
+			if (_.indexOf(nameArrTemp, itemName) === -1) {
+				nameArrTemp.push(itemName);
+				srcArr.push({
+					imgUrl: baseSrc.replace(srcReg,
+						baseSrc.match(srcReg)[0]),
+					imgName: itemName
+				});
 			}
+		}
+		srcArr = _.uniq(srcArr);
 
-			srcArr = _.uniq(srcArr);
-			async.each(srcArr, function (item, callback) {
-				http.get(item.imgUrl, function (res) {
-					var imgData = "";
-					res.setEncoding("binary"); //一定要设置response的编码为binary否则会下载下来的图片打不开
+		async.each(srcArr, function (item, callback) {
+			http.get(item.imgUrl, function (res) {
+				var imgData = "";
+				res.setEncoding("binary"); //一定要设置response的编码为binary否则会下载下来的图片打不开
 
-					res.on("data", function (chunk) {
-						imgData += chunk;
-					});
+				res.on("data", function (chunk) {
+					imgData += chunk;
+				});
 
-					res.on("end", function () {
-						fs.writeFile(downloadDir + item.imgName, imgData, "binary", function (err) {
-							if (err) {
-								console.log("down fail");
-								return;
-							}
-							console.log("down success");
-							callback();
-						});
+				res.on("end", function () {
+					fs.writeFile(downloadDir + item.imgName, imgData, "binary", function (err) {
+						if (err) {
+							console.log("down fail");
+							return;
+						}
+						console.log("down success");
+						callback();
 					});
 				});
-			}, function (err) {
-				// if any of the file processing produced an error, err would equal that error
-				if (err) {
-					cb(err);
-				} else {
-					cb();
-				}
 			});
+		}, function (err) {
+			// if any of the file processing produced an error, err would equal that error
+			if (err) {
+				cb(err);
+			} else {
+				cb();
+			}
 		});
+	});
 }
 
 exports.analysis = analysis;
