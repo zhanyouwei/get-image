@@ -10,7 +10,8 @@ var sitepage = null;
 var phInstance = null;
 var htmlContent = null;
 
-function getHtml(url,cb) {
+function getHtml(url, cb) {
+	console.time('getHtml');
 	phantom.create()
 		.then(function (instance) {
 			phInstance = instance;
@@ -19,16 +20,18 @@ function getHtml(url,cb) {
 		.then(function (page) {
 			sitepage = page;
 			page.setting('javascriptEnabled');
+			//page.setting(' --web-security', 'no');
 			return page.open(url);
 		})
 		.then(function (status) {
 			console.log(status);
+			//sitepage
 			return sitepage.property('content');
 		})
 		.then(function (content) {
-			//console.log(content);
 			sitepage.close();
 			phInstance.exit();
+			console.timeEnd('getHtml');
 			cb(content);
 		})
 		.catch(function (error) {

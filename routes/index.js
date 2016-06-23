@@ -14,11 +14,13 @@ var router = express.Router();
 
 var ebayCtrl = require('../controller/ebay.ctrl');
 var jdCtrl = require('../controller/jd.ctrl');
+var kaolaCtrl = require('../controller/kaola.ctrl');
 
 var rootDir = path.join(__dirname, '../');
 var goodsPlatformList = [
 	'ebay',
-	'jd'
+	'jd',
+	'kaola'
 ];
 
 router.get('/', function (req, res) {
@@ -51,6 +53,17 @@ router.post('/analysis', function (req, res, next) {
 						next(err);
 						return;
 					}
+					res.redirect('/download/' + goodsName);
+				});
+				break;
+			case 'kaola':
+				console.time('analysis');
+				kaolaCtrl.analysis(goodsUrl, goodsName, function (err) {
+					if (err) {
+						next(err);
+						return;
+					}
+					console.timeEnd('analysis');
 					res.redirect('/download/' + goodsName);
 				});
 				break;
