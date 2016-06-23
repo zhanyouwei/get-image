@@ -6,11 +6,11 @@
 var phantom = require('phantom');
 var cheerio = require('cheerio');
 
-var sitepage = null;
-var phInstance = null;
-var htmlContent = null;
 
 function getHtml(url, cb) {
+	var sitepage = null;
+	var phInstance = null;
+	var htmlContent = null;
 	console.time('getHtml');
 	phantom.create()
 		.then(function (instance) {

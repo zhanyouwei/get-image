@@ -33,7 +33,6 @@ router.get('/', function (req, res) {
 router.post('/analysis', function (req, res, next) {
 	var goodsPlatform = req.body.goodsPlatform;
 	var goodsUrl = req.body.goodsUrl;
-	console.log(goodsUrl);
 	var goodsName = req.body.goodsName;
 
 	if (_.indexOf(goodsPlatformList, goodsPlatform) !== -1) {
@@ -88,7 +87,6 @@ router.get('/download/:name', function (req, res) {
 				return;
 			}
 			files.forEach(function (item) {
-				console.log(item);
 				zip.file(item, fs.readFileSync(rootDir + '/download/images/' + name + '/' + item));
 			});
 			zip
