@@ -16,13 +16,15 @@ var ebayCtrl = require('../controller/ebay.ctrl');
 var jdCtrl = require('../controller/jd.ctrl');
 var kaolaCtrl = require('../controller/kaola.ctrl');
 var amazonCtrl = require('../controller/amazon.ctrl');
+var jomashopCtrl = require('../controller/jomashop.ctrl');
 
 var rootDir = path.join(__dirname, '../');
 var goodsPlatformList = [
 	'ebay',
 	'jd',
 	'kaola',
-	'amazon'
+	'amazon',
+	'jomashop'
 ];
 
 router.get('/', function (req, res) {
@@ -71,6 +73,17 @@ router.post('/analysis', function (req, res, next) {
 			case 'amazon':
 				console.time('analysis');
 				amazonCtrl.analysis(goodsUrl, goodsName, function (err) {
+					if (err) {
+						next(err);
+						return;
+					}
+					console.timeEnd('analysis');
+					res.redirect('/download/' + goodsName);
+				});
+				break;
+			case 'jomashop':
+				console.time('analysis');
+				jomashopCtrl.analysis(goodsUrl, goodsName, function (err) {
 					if (err) {
 						next(err);
 						return;
