@@ -1,15 +1,11 @@
 /**
  * @author: Jason.友伟 zhanyouwei@meitunmama.com
- * Created on 16/6/25.
+ * Created on 16/6/28.
  */
 
-
-
-var http = require("http");
 var https = require("https");
 var fs = require("fs");
 var path = require("path");
-var superAgent = require('superagent');
 var cheerio = require('cheerio');
 var _ = require('lodash');
 var mkdirp = require('mkdirp');
@@ -34,20 +30,20 @@ function analysis(url, name, cb) {
 		try {
 			console.time('analysisHtml');
 			var $ = cheerio.load(content);
-			var baseSrc = $('#MagicZoomPlus img').attr('src');
-			console.log(baseSrc);
+			var baseSrc = $('#J_ImgBooth').attr('src');
+
 			var srcArr = [];
 			var nameArrTemp = [];
 			var srcSplitArr = [];
-			if ($('.MagicZoomThumbsContainer img').length > 0) {
-				$('.MagicZoomThumbsContainer img').each(function (key, value) {
+			if ($('#J_UlThumb img').length > 0) {
+				$('#J_UlThumb img').each(function (key, value) {
 					srcSplitArr = value.attribs.src.split('/');
 					var itemName = srcSplitArr[srcSplitArr.length - 1];
 
 					if (_.indexOf(nameArrTemp, itemName) === -1) {
 						nameArrTemp.push(itemName);
 						srcArr.push({
-							imgUrl: value.attribs.src.replace('/thumbnail/70x70/', '/image/490x490/'),
+							imgUrl: 'https:' + value.attribs.src.split('.jpg_')[0] + '.jpg',
 							imgName: itemName
 						});
 					}
@@ -59,18 +55,17 @@ function analysis(url, name, cb) {
 				if (_.indexOf(nameArrTemp, itemName) === -1) {
 					nameArrTemp.push(itemName);
 					srcArr.push({
-						imgUrl: baseSrc,
+						imgUrl: 'https:' + baseSrc.split('.jpg_')[0] + '.jpg',
 						imgName: itemName
 					});
 				}
 			}
 
-
 			srcArr = _.uniq(srcArr);
 			console.log(srcArr);
 
 			async.each(srcArr, function (item, callback) {
-				http.get(item.imgUrl, function (res) {
+				https.get(item.imgUrl, function (res) {
 					var imgData = "";
 					res.setEncoding("binary"); //一定要设置response的编码为binary否则会下载下来的图片打不开
 
