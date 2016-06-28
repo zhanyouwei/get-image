@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var ejs = require('ejs');
 var favicon = require('serve-favicon');
 var errorHandler = require('errorhandler');
+var cors = require('cors');
 
 var rootDir = path.join(__dirname);
 var appDir = path.join(rootDir);
@@ -27,7 +28,18 @@ app.use(cookieParser());
 
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(express.static(path.join(appDir, 'public')));
-
+app.use(express.static(path.join(appDir, 'download')));
+//设置跨域访问
+//var corsOptions = {
+//	origin: ["http://localhost:9000", "http://localhost:8080", "http://localhost:3000", /\.kaihei\.wang$/],
+//	allowedHeaders: "Origin, Content-Type, Content-Length, Accept, X-Requested-With, Authorization, version, client-type, game, if-none-match",
+//	methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+//	credentials: true
+//};
+//app.options('*', cors(corsOptions), function (req, res, next) {
+//	res.sendStatus(200);
+//});
+//app.use(cors(corsOptions));
 app.use('/', routes);
 
 // catch 404 and forward to error handler

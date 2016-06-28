@@ -1,0 +1,43 @@
+{
+  "manifest_version": 2,
+  "name": "getImage_ext",
+  "version": "1.0",
+  "description": "海淘助手",
+  "icons": {
+    "16": "images/icon16.png",
+    "48": "images/icon48.png",
+    "64": "images/icon64.png",
+    "128": "images/icon128.png"
+  },
+  "browser_action": {
+    "default_icon": {
+      "19": "images/icon24.png",
+      "38": "images/icon48.png"
+    },
+    "default_title": "海淘助手",
+    "default_popup": "popup.html"
+  },
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "windows": "Alt+D",
+        "mac": "Alt+D"
+      }
+    }
+  },
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "html": "background.html"
+  },
+  "permissions": [
+    "tabs",
+    "storage",
+    "cookies",
+    "activeTab",
+    "<all_urls>",
+    "downloads",
+    "https://*/*"
+  ]
+}

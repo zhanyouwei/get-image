@@ -38,3 +38,6 @@ jspm_packages
 .idea
 download/images/**/*.*
 !download/images/.gitkeep
+
+public/zip/*
+!public/zip/.gitkeep

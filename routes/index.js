@@ -6,10 +6,13 @@
 'use strict';
 
 var express = require('express');
+var https = require('https');
 var path = require('path');
 var fs = require('fs');
 var _ = require('lodash');
 var JSZip = require("jszip");
+var async = require("async");
+var mkdirp = require('mkdirp');
 var router = express.Router();
 
 var ebayCtrl = require('../controller/ebay.ctrl');
@@ -140,6 +143,65 @@ router.get('/download/:name', function (req, res) {
 	} else {
 		res.redirect('/');
 	}
+});
+
+router.post('/download', function (req, res, next) {
+	var downloadDir = rootDir + "/download/images/";
+
+	mkdirp(downloadDir + 'images', function (err) {
+		if (err) cb(err);
+		else {
+			downloadDir = rootDir + "/download/images/images/";
+		}
+	});
+	async.each(req.body.srcList, function (item, callback) {
+		https.get(item.imgUrl, function (res) {
+			var imgData = "";
+			res.setEncoding("binary"); //一定要设置response的编码为binary否则会下载下来的图片打不开
+
+			res.on("data", function (chunk) {
+				imgData += chunk;
+			});
+
+			res.on("end", function () {
+				fs.writeFile(downloadDir + item.imgName, imgData, "binary", function (err) {
+					if (err) {
+						console.log("down fail");
+						return;
+					}
+					console.log("down success");
+					callback();
+				});
+			});
+		});
+	}, function (err) {
+		// if any of the file processing produced an error, err would equal that error
+		if (err) {
+			next(err);
+		} else {
+			var zipDir = rootDir + '/public/zip/images.zip';
+			var zip = new JSZip();
+			var dirPath = rootDir + '/download/images/images';
+			var result = [];
+			fs.readdir(dirPath, function (err, files) {
+				//err 为错误 , files 文件名列表包含文件夹与文件
+				if (err) {
+					console.log('error:\n' + err);
+					return;
+				}
+				files.forEach(function (item) {
+					zip.file(item, fs.readFileSync(rootDir + '/download/images/images/' + item));
+				});
+				zip
+					.generateNodeStream({type: 'nodebuffer', streamFiles: true})
+					.pipe(fs.createWriteStream(zipDir))
+					.on('finish', function () {
+						console.log("out.zip written.");
+						res.download(zipDir)
+					});
+			});
+		}
+	});
 });
 
 module.exports = router;
