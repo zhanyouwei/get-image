@@ -7,6 +7,7 @@
 
 var express = require('express');
 var https = require('https');
+var http = require('http');
 var path = require('path');
 var fs = require('fs');
 var _ = require('lodash');
@@ -146,16 +147,24 @@ router.get('/download/:name', function (req, res) {
 });
 
 router.post('/download', function (req, res, next) {
+	var httpObj = null;
+	var goodsName = req.body.goodsName;
+	var httpType = req.body.httpType;
+	if (httpType == 'https') {
+		httpObj = https;
+	} else {
+		httpObj = http;
+	}
 	var downloadDir = rootDir + "/download/images/";
 
-	mkdirp(downloadDir + 'images', function (err) {
-		if (err) cb(err);
+	mkdirp(downloadDir + goodsName, function (err) {
+		if (err) next(err);
 		else {
-			downloadDir = rootDir + "/download/images/images/";
+			downloadDir = rootDir + "/download/images/" + goodsName + '/';
 		}
 	});
 	async.each(req.body.srcList, function (item, callback) {
-		https.get(item.imgUrl, function (res) {
+		httpObj.get(item.imgUrl, function (res) {
 			var imgData = "";
 			res.setEncoding("binary"); //一定要设置response的编码为binary否则会下载下来的图片打不开
 
@@ -179,25 +188,24 @@ router.post('/download', function (req, res, next) {
 		if (err) {
 			next(err);
 		} else {
-			var zipDir = rootDir + '/public/zip/images.zip';
+			var zipDir = rootDir + '/public/zip/' + goodsName + '.zip';
 			var zip = new JSZip();
-			var dirPath = rootDir + '/download/images/images';
 			var result = [];
-			fs.readdir(dirPath, function (err, files) {
+			fs.readdir(downloadDir, function (err, files) {
 				//err 为错误 , files 文件名列表包含文件夹与文件
 				if (err) {
 					console.log('error:\n' + err);
 					return;
 				}
 				files.forEach(function (item) {
-					zip.file(item, fs.readFileSync(rootDir + '/download/images/images/' + item));
+					zip.file(item, fs.readFileSync(downloadDir + item));
 				});
 				zip
 					.generateNodeStream({type: 'nodebuffer', streamFiles: true})
 					.pipe(fs.createWriteStream(zipDir))
 					.on('finish', function () {
 						console.log("out.zip written.");
-						res.download(zipDir)
+						res.send();
 					});
 			});
 		}
