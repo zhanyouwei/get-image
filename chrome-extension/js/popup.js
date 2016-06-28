@@ -51,7 +51,7 @@ $(function () {
 			tipsElem.html('共:' + msg.values.length + '张图片,正在分析中。。。');
 			$.ajax({
 				type: "post",
-				url: 'http://localhost:9000/download',
+				url: 'http://192.168.10.54:9400/download',
 				data: {
 					srcList: imgSrcList,
 					goodsName: msg.goodsName,
