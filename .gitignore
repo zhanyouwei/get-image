@@ -41,3 +41,5 @@ download/images/**/*.*
 
 public/zip/*
 !public/zip/.gitkeep
+*.crx
+*.pem

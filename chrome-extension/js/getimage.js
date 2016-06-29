@@ -27,7 +27,41 @@ $(function () {
 		});
 
 		$('body').animate({scrollTop: $(document).height()}, 15000, 'linear', function () {
-			console.log('ok');
+			$('#description img').each(function (key, value) {
+				var srcTemp = $(value).attr('src');
+				srcSplitArr = srcTemp.split('/');
+				var itemName = srcSplitArr[srcSplitArr.length - 1];
+
+				if ($.inArray(itemName, nameArrTemp) === -1) {
+					nameArrTemp.push(itemName);
+					srcArr.push({
+						imgUrl: srcTemp.indexOf('https:') === -1 ? 'https:' + srcTemp : srcTemp,
+						imgName: itemName
+					});
+				}
+			});
+			cb(srcArr);
+		});
+	}
+
+	function getImage_taobao(cb) {
+		goodsName = $('.tb-main-title').attr('data-title').trim();
+		var srcArr = [];
+		$('#J_UlThumb img').each(function (key, value) {
+			var srcTemp = $(value).attr('src');
+			srcSplitArr = srcTemp.split('/');
+			var itemName = srcSplitArr[srcSplitArr.length - 1];
+
+			if ($.inArray(itemName, nameArrTemp) === -1) {
+				nameArrTemp.push(itemName);
+				srcArr.push({
+					imgUrl: srcTemp.indexOf('https:') === -1 ? 'https:' + srcTemp.split('.jpg_')[0] + '.jpg' : srcTemp,
+					imgName: itemName
+				});
+			}
+		});
+
+		$('body').animate({scrollTop: $(document).height()}, 15000, 'linear', function () {
 			$('#description img').each(function (key, value) {
 				var srcTemp = $(value).attr('src');
 				srcSplitArr = srcTemp.split('/');
@@ -280,7 +314,7 @@ $(function () {
 			});
 			break;
 		case 'taobao':
-			getImage_tmall(function (result) {
+			getImage_taobao(function (result) {
 				chrome.runtime.sendMessage({message: "getUrl", values: result, goodsName: goodsName});
 			});
 			break;
