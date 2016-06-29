@@ -73,6 +73,9 @@ $(function () {
 			case 'tmall.com':
 				platformName = 'tmall';
 				break;
+			case 'tmall.hk':
+				platformName = 'tmallhk';
+				break;
 			case 'jd.com':
 				platformName = 'jd';
 				break;

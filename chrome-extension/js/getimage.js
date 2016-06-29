@@ -270,6 +270,11 @@ $(function () {
 				chrome.runtime.sendMessage({message: "getUrl", values: result, goodsName: goodsName});
 			});
 			break;
+		case 'tmallhk':
+			getImage_tmall(function (result) {
+				chrome.runtime.sendMessage({message: "getUrl", values: result, goodsName: goodsName});
+			});
+			break;
 		case 'amazon':
 			getImage_amazon(function (result) {
 				chrome.runtime.sendMessage({message: "getUrl", values: result, goodsName: goodsName});
