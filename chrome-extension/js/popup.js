@@ -6,7 +6,6 @@ $(function () {
 	var imgSrcList = [];
 	var platformHttpType = null;
 	var getImageElem = $('#getImage');
-	var downloadElem = $('#download');
 	var loadingElem = $('#loading');
 	var tipsElem = $('#tips');
 
@@ -39,9 +38,6 @@ $(function () {
 				allFrames: true
 			});
 		});
-	});
-
-	downloadElem.on('click', function (e) {
 	});
 
 	chrome.extension.onMessage.addListener(function (msg) {
@@ -96,6 +92,10 @@ $(function () {
 				break;
 			case 'ymatou.com':
 				platformName = 'ymatou';
+				break;
+			default:
+				tipsElem.html('<h1>暂不支持该网站</h1>');
+				return;
 				break;
 		}
 		return {
