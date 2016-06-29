@@ -94,6 +94,9 @@ $(function () {
 			case 'kaola.com':
 				platformName = 'kaola';
 				break;
+			case 'ymatou.com':
+				platformName = 'ymatou';
+				break;
 		}
 		return {
 			platFormName: platformName,
