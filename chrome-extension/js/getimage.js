@@ -6,7 +6,7 @@ $(function () {
 	var srcSplitArr = [];
 	var nameArrTemp = [];
 	var goodsName = null;
-	var count =0;
+	var count = 0;
 
 
 	function getImage_tmall(cb) {
@@ -25,20 +25,24 @@ $(function () {
 				});
 			}
 		});
-		$('#description img').each(function (key, value) {
-			var srcTemp = $(value).attr('src');
-			srcSplitArr = srcTemp.split('/');
-			var itemName = srcSplitArr[srcSplitArr.length - 1];
 
-			if ($.inArray(itemName, nameArrTemp) === -1) {
-				nameArrTemp.push(itemName);
-				srcArr.push({
-					imgUrl: srcTemp.indexOf('https:') === -1 ? 'https:' + srcTemp : srcTemp,
-					imgName: itemName
-				});
-			}
+		$('body').animate({scrollTop: $(document).height()}, 15000, 'linear', function () {
+			console.log('ok');
+			$('#description img').each(function (key, value) {
+				var srcTemp = $(value).attr('src');
+				srcSplitArr = srcTemp.split('/');
+				var itemName = srcSplitArr[srcSplitArr.length - 1];
+
+				if ($.inArray(itemName, nameArrTemp) === -1) {
+					nameArrTemp.push(itemName);
+					srcArr.push({
+						imgUrl: srcTemp.indexOf('https:') === -1 ? 'https:' + srcTemp : srcTemp,
+						imgName: itemName
+					});
+				}
+			});
+			cb(srcArr);
 		});
-		cb(srcArr);
 	}
 
 	function getImage_amazon(cb) {
@@ -271,6 +275,11 @@ $(function () {
 			});
 			break;
 		case 'tmallhk':
+			getImage_tmall(function (result) {
+				chrome.runtime.sendMessage({message: "getUrl", values: result, goodsName: goodsName});
+			});
+			break;
+		case 'taobao':
 			getImage_tmall(function (result) {
 				chrome.runtime.sendMessage({message: "getUrl", values: result, goodsName: goodsName});
 			});
