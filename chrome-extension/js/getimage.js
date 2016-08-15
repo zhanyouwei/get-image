@@ -311,13 +311,16 @@ $(function () {
 	}
 
 	function getImage_jomashop(cb) {
-		goodsName = $('.product-name').text().trim();
-		var baseSrc = $('#MagicZoomPlus img').attr('src');
+		if ($('.product-name').text().trim() != '') {
+			goodsName = $('.product-name').text().trim().replace('/', '');
+		}
+		var MagicZoomPlusImgList = $('.MagicZoomPlus img');
 		var srcArr = [];
 		var nameArrTemp = [];
 		var srcSplitArr = [];
-		if ($('.MagicZoomThumbsContainer img').length > 0) {
-			$('.MagicZoomThumbsContainer img').each(function (key, value) {
+		var MagicScrollItemListElem = $('.MagicScrollItem img');
+		if (MagicScrollItemListElem.length > 0) {
+			MagicScrollItemListElem.each(function (key, value) {
 				var srcTemp = $(value).attr('src');
 				srcSplitArr = srcTemp.split('/');
 				var itemName = srcSplitArr[srcSplitArr.length - 1];
@@ -331,18 +334,23 @@ $(function () {
 				}
 			});
 		} else {
-			srcSplitArr = baseSrc.split('/');
-			var itemName = srcSplitArr[srcSplitArr.length - 1];
+			if (MagicZoomPlusImgList.length > 0) {
+				var baseSrc = MagicZoomPlusImgList[0].attr('src');
+				srcSplitArr = baseSrc.split('/');
+				var itemName = srcSplitArr[srcSplitArr.length - 1];
 
-			if ($.inArray(itemName, nameArrTemp) === -1) {
-				nameArrTemp.push(itemName);
-				srcArr.push({
-					imgUrl: baseSrc,
-					imgName: itemName
-				});
+				if ($.inArray(itemName, nameArrTemp) === -1) {
+					nameArrTemp.push(itemName);
+					srcArr.push({
+						imgUrl: baseSrc,
+						imgName: itemName
+					});
+				}
 			}
 		}
-		cb(srcArr);
+		if (srcArr.length) {
+			cb(srcArr);
+		}
 	}
 
 	switch (getImagePlatFormName) {
